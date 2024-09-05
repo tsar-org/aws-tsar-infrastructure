@@ -1,0 +1,26 @@
+services:
+  terraform:
+    image: hashicorp/terraform:latest
+    volumes:
+      - ./terraform:/workdir/terraform
+      - ./.oci:/workdir/.oci
+      - ./age/keys.txt:/root/.config/sops/age/keys.txt
+      - ./secret.enc.yaml:/workdir/secret.enc.yaml
+    working_dir: /workdir/terraform
+    env_file:
+      - .env
+    entrypoint: ash
+    tty: true
+
+  tflint:
+    image: ghcr.io/terraform-linters/tflint
+    volumes:
+      - ./terraform:/workdir/terraform
+      - ./.oci:/workdir/.oci
+      - ./age/keys.txt:/root/.config/sops/age/keys.txt
+      - ./secret.enc.yaml:/workdir/secret.enc.yaml
+    working_dir: /workdir/terraform
+    env_file:
+      - .env
+    entrypoint: ash
+    tty: true
