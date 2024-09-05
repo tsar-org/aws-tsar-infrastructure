@@ -1,0 +1,71 @@
+version: "3"
+
+vars:
+  TERRAFORM_SERVICE_NAME: terraform
+  LINTER_SERVICE_NAME: tflint
+  SOPS_ENCRYPT_FILE: secret.enc.yaml
+  AGE_KEY_FILE: /age/keys.txt
+
+tasks:
+  install-pre-commit:
+    cmds:
+      - pre-commit install
+
+  uninstall-pre-commit:
+    cmds:
+      - pre-commit uninstall
+
+  up:
+    deps: [install-pre-commit]
+    cmds:
+      - cp -n .env.example .env
+      - docker compose up -d
+      - task: init
+
+  down:
+    cmds:
+      - docker compose down --remove-orphans
+
+  destroy:
+    deps: [uninstall-pre-commit]
+    cmds:
+      - docker compose down --rmi all --volumes --remove-orphans
+
+  init:
+    cmds:
+      - docker compose exec -T {{.TERRAFORM_SERVICE_NAME}} terraform init
+      - docker compose exec -T {{.LINTER_SERVICE_NAME}} tflint --init
+
+  lint:
+    cmds:
+      - docker compose exec -T {{.TERRAFORM_SERVICE_NAME}} terraform fmt
+      - docker compose exec -T {{.TERRAFORM_SERVICE_NAME}} terraform validate
+      - docker compose exec -T {{.LINTER_SERVICE_NAME}} tflint
+
+  plan:
+    deps: [lint]
+    cmds:
+      - docker compose exec -T {{.TERRAFORM_SERVICE_NAME}} terraform plan
+
+  apply:
+    deps: [lint]
+    cmds:
+      - docker compose exec -T {{.TERRAFORM_SERVICE_NAME}} terraform apply
+
+  tf-destroy:
+    deps: [lint]
+    cmds:
+      - docker compose exec -T {{.TERRAFORM_SERVICE_NAME}} terraform destroy
+
+  sh:
+    cmds:
+      - docker compose exec {{.TERRAFORM_SERVICE_NAME}} ash
+
+  log:
+    cmds:
+      - docker compose logs
+
+  edit-secret:
+    aliases: [es]
+    cmds:
+      - export SOPS_AGE_KEY_FILE=$(pwd)/{{.AGE_KEY_FILE}} && EDITOR="code --wait" sops  {{.SOPS_ENCRYPT_FILE}}

@@ -1,0 +1,27 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: arduino/setup-task@v2
+
+      - name: copy env
+        run: cp .env.example .env
+
+      - name: build
+        run: docker compose up -d --build
+
+      - name: fromat
+        run: docker compose exec -T terraform terraform fmt
+
+      - name: lint
+        run: docker compose exec -T tflint tflint
