@@ -29,21 +29,17 @@
 
 1. `credentials setup`を行う
 
-1. ociのAPI Keyを発行
-
-- API署名Key生成方法 <https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#two>
-- `.env`に必要な情報を記述
-
-    ```sh
-    cp .env.example .env
-    ```
-
-- 秘密鍵を`./.oci`に配置
-
 1. 環境立ち上げ
 
     ```sh
     task up
+    ```
+
+1. `.env`に必要な情報を記述
+
+    ```text
+    AWS_ACCESS_KEY_ID=""
+    AWS_SECRET_ACCESS_KEY=""
     ```
 
 ## `secret.enc.yaml`に情報を追加する方法
