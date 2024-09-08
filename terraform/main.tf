@@ -3,12 +3,20 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = "= 5.66.0"
     }
 
     sops = {
       source  = "carlpett/sops"
-      version = "~> 1.1.0"
+      version = "= 1.1.1"
     }
+  }
+
+  # tfstate file
+  backend "s3" {
+    bucket  = "tsar-terraform-state"
+    key     = "terraform.tfstate"
+    region  = "ap-northeast-1"
+    encrypt = true
   }
 }

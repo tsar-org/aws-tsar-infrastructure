@@ -18,7 +18,7 @@ tasks:
   up:
     deps: [install-pre-commit]
     cmds:
-      - cp -n .env.example .env
+      - if [ ! -f .env ]; then cp .env.example .env; fi
       - docker compose up -d
       - task: init
 
