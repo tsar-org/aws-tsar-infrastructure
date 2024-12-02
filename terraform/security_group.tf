@@ -20,9 +20,7 @@ resource "aws_vpc_security_group_ingress_rule" "minecraft_security_rule_in" {
 
 # Security group rule for minecraft server egress
 resource "aws_vpc_security_group_egress_rule" "minecraft_security_rule_out" {
-  from_port         = 443
-  to_port           = 443
-  ip_protocol       = "tcp"
+  ip_protocol       = "-1"
   security_group_id = aws_security_group.minecraft_security_group.id
   cidr_ipv4         = "0.0.0.0/0"
 }
