@@ -3,7 +3,7 @@
 
 provider "registry.terraform.io/carlpett/sops" {
   version     = "1.1.1"
-  constraints = "~> 1.1.0"
+  constraints = "1.1.1"
   hashes = [
     "h1:AM1mG6OjcEL8hIr0PPel85i0HUlLZH8BZer5Dq7uiOM=",
     "zh:175ec198e1b4d1cad1ae559ebe8cdf574617805010c22dfb8af93a2057ba8332",
