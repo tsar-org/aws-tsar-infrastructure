@@ -20,8 +20,17 @@ jobs:
       - name: build
         run: docker compose up -d --build
 
+      - name: terraform init
+        run: docker compose exec -T terraform terraform init
+
+      - name: tflint init
+        run: docker compose exec -T tflint tflint --init
+
       - name: fromat
-        run: docker compose exec -T terraform terraform fmt
+        run: docker compose exec -T terraform terraform fmt -check -recursive
+
+      - name: validate
+        run: docker compose exec -T terraform terraform validate
 
       - name: lint
-        run: docker compose exec -T tflint tflint
+        run: docker compose exec -T tflint tflint --recursive
