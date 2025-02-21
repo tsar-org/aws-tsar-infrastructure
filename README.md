@@ -4,26 +4,7 @@
 
 - docker(<https://www.docker.com/ja-jp/>)
 - task(<https://taskfile.dev/installation/>)
-- sops(<https://github.com/getsops/sops>)
-- age(<https://github.com/FiloSottile/age>)
-- vscode cli
-
-## credentials setup
-
-1. generate key pare by age
-
-    ```sh
-    mkdir -p age
-    age-keygen -o age/keys.txt
-    ```
-
-    表示されたpublic keyを既に登録済みの人に共有する。
-
-2. add generated public key to `secret.enc.yaml`
-
-    ```sh
-    sops updatekeys secret.enc.yaml
-    ```
+- lefthook(<https://lefthook.dev/installation/index.html>)
 
 ## How to Develop
 
@@ -40,13 +21,8 @@
     ```text
     AWS_ACCESS_KEY_ID=""
     AWS_SECRET_ACCESS_KEY=""
+    AWS_SESSION_TOKEN=""
     ```
-
-## `secret.enc.yaml`に情報を追加する方法
-
-```sh
-task es
-```
 
 ## commit emoji
 

@@ -1,0 +1,13 @@
+pre-commit:
+  parallel: true
+  commands:
+    terraform:format:
+      glob: 'terraform/**'
+      stage_fixed: true
+      run: docker compose exec -T terraform terraform fmt
+    terraform:validate:
+      glob: 'terraform/**'
+      run: docker compose exec -T terraform terraform validate
+    tflint:
+      glob: 'terraform/**'
+      run: docker compose exec -T tflint tflint
