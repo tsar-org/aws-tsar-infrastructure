@@ -1,6 +1,6 @@
 {
 	"recommendations": [
 		"hashicorp.hcl",
-		"4ops.terraform"
+		"hashicorp.terraform"
 	]
 }
