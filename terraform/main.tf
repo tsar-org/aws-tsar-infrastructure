@@ -5,10 +5,13 @@ terraform {
       source  = "hashicorp/aws"
       version = "5.88.0"
     }
+  }
 
-    sops = {
-      source  = "carlpett/sops"
-      version = "= 1.1.1"
-    }
+  # tfstate file
+  backend "s3" {
+    bucket  = "tsar-terraform-state"
+    key     = "terraform.tfstate"
+    region  = "ap-northeast-1"
+    encrypt = true
   }
 }

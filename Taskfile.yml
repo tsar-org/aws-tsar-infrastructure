@@ -36,11 +36,13 @@ tasks:
   plan:
     aliases: [p]
     cmds:
+      - task: lint
       - docker compose exec -T {{.TERRAFORM_SERVICE_NAME}} terraform plan
 
   apply:
     aliases: [a]
     cmds:
+      - task: lint
       - docker compose exec -T {{.TERRAFORM_SERVICE_NAME}} terraform apply
 
   sh:
