@@ -35,3 +35,15 @@ resource "aws_route53_record" "tsar_cert_sub_domain_validation" {
   type            = each.value.type
   zone_id         = aws_route53_zone.tsar_host_zone.zone_id
 }
+
+resource "aws_route53_record" "nlb_alias_record" {
+  zone_id = aws_route53_zone.tsar_host_zone.zone_id
+  name    = "nlb.${aws_route53_zone.tsar_host_zone.name}"
+  type    = "A"
+
+  alias {
+    name                   = aws_lb.nlb.dns_name
+    zone_id                = aws_lb.nlb.zone_id
+    evaluate_target_health = true
+  }
+}

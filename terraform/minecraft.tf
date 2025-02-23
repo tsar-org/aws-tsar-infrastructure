@@ -6,7 +6,7 @@ resource "aws_ecs_task_definition" "minecraft_task" {
   container_definitions = jsonencode([{
     name      = "minecraft"
     image     = "itzg/minecraft-server"
-    essential = true
+    essential = false
     logConfiguration = {
       logDriver = "awslogs",
       options = {
@@ -30,6 +30,15 @@ resource "aws_ecs_task_definition" "minecraft_task" {
       {
         name  = "VERSION"
         value = "LATEST"
+      },
+      # https://docker-minecraft-server.readthedocs.io/en/latest/configuration/jvm-options/#memory-limit
+      {
+        name : "MEMORY"
+        value : ""
+      },
+      {
+        name : "JVM_XX_OPTS"
+        value : "-XX:MaxRAMPercentage=90"
       }
     ],
     mountPoints = [
@@ -71,12 +80,42 @@ resource "aws_ecs_service" "minecraft_service" {
   desired_count                      = 1
   launch_type                        = "FARGATE"
   enable_execute_command             = true
+  force_new_deployment               = true
   deployment_minimum_healthy_percent = 0
   deployment_maximum_percent         = 100
 
+  load_balancer {
+    target_group_arn = aws_lb_target_group.nlb_for_minecraft.arn
+    container_name   = "minecraft"
+    container_port   = 25565
+  }
+
   network_configuration {
-    subnets          = [aws_subnet.subnet.id]
+    subnets = [
+      aws_subnet.subnet_1.id,
+      aws_subnet.subnet_2.id
+    ]
     security_groups  = [aws_security_group.minecraft_security_group.id]
     assign_public_ip = true
   }
+}
+
+resource "aws_security_group" "minecraft_security_group" {
+  name        = "tsar-minecraft-security-group"
+  description = "tsar minecraft server security group"
+  vpc_id      = aws_vpc.vpc.id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "minecraft_security_rule_in" {
+  from_port         = 25565
+  to_port           = 25565
+  ip_protocol       = "tcp"
+  security_group_id = aws_security_group.minecraft_security_group.id
+  cidr_ipv4         = "0.0.0.0/0"
+}
+
+resource "aws_vpc_security_group_egress_rule" "minecraft_security_rule_out" {
+  ip_protocol       = "-1"
+  security_group_id = aws_security_group.minecraft_security_group.id
+  cidr_ipv4         = "0.0.0.0/0"
 }

@@ -25,7 +25,7 @@ resource "aws_acm_certificate_validation" "tsar_domain_certificate_validation" {
 }
 
 # 検証完了までの待機
-resource "aws_acm_certificate_validation" "mag_cert_sub_domain" {
+resource "aws_acm_certificate_validation" "tsar_sub_domain_certificate_validation" {
   certificate_arn         = aws_acm_certificate.tsar_sub_domain_certification.arn
   validation_record_fqdns = [for record in aws_route53_record.tsar_cert_sub_domain_validation : record.fqdn]
 }
