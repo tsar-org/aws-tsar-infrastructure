@@ -6,7 +6,7 @@ resource "aws_ecs_task_definition" "minecraft_task" {
   container_definitions = jsonencode([{
     name      = "minecraft"
     image     = "itzg/minecraft-server"
-    essential = false
+    essential = true
     logConfiguration = {
       logDriver = "awslogs",
       options = {
@@ -77,7 +77,7 @@ resource "aws_ecs_service" "minecraft_service" {
   name                               = "tsar-minecraft-ecs-service"
   cluster                            = aws_ecs_cluster.minecraft_cluster.id
   task_definition                    = aws_ecs_task_definition.minecraft_task.arn
-  desired_count                      = 1
+  desired_count                      = 0
   launch_type                        = "FARGATE"
   enable_execute_command             = true
   force_new_deployment               = true
