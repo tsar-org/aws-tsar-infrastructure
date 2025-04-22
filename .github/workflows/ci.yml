@@ -9,13 +9,24 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v4
 
       - uses: arduino/setup-task@v2
 
-      - name: copy env
-        run: cp .env.example .env
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE_ARN }}
+          aws-region: ap-northeast-1
+
+      - name: Create .env file
+        run: |
+          echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" > .env
+          echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> .env
+          echo "AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN" >> .env
+          echo "AWS_REGION=$AWS_REGION" >> .env
 
       - name: build
         run: docker compose up -d --build

@@ -17,7 +17,6 @@ tasks:
       - docker compose down --remove-orphans
 
   destroy:
-    deps: [uninstall-pre-commit]
     cmds:
       - docker compose down --rmi all --volumes --remove-orphans
 
@@ -36,11 +35,13 @@ tasks:
   plan:
     aliases: [p]
     cmds:
+      - task: lint
       - docker compose exec -T {{.TERRAFORM_SERVICE_NAME}} terraform plan
 
   apply:
     aliases: [a]
     cmds:
+      - task: lint
       - docker compose exec -T {{.TERRAFORM_SERVICE_NAME}} terraform apply
 
   sh:
